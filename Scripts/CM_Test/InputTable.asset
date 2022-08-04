@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9faec227b739924f80d2deea3b4464d, type: 3}
+  m_Name: InputTable
+  m_EditorClassIdentifier: 
+  FirstXInvert: 0
+  FirstYInvert: 0
+  SecondXInvert: 0
+  SecondYInvert: 0
+  FirstXSensitivity: 1
+  FirstYSensitivity: 1
+  SecondXSensitivity: 1
+  SecondYSensitivity: 1
+  KeyNames:
+  - a
+  - b
+  KeyModes: 0000000000000000
+  KeyBoardKeyCode: 4401000034000000
+  XBoxKeyCode: 0000000039000000
+  PsKeyCode: 0000000000000000
+  KeyCodeEvent:
+  - m_PersistentCalls:
+      m_Calls: []
+  - m_PersistentCalls:
+      m_Calls: []
+  FirstAxesEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  SecondAxesEvent:
+    m_PersistentCalls:
+      m_Calls: []

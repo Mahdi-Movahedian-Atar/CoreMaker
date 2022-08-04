@@ -1,0 +1,16 @@
+{
+    "name": "CM.DataManagement",
+    "rootNamespace": "CM.DataManagement",
+    "references": [
+        "GUID:3807aeacff3e2264099c8f32803673bc"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
