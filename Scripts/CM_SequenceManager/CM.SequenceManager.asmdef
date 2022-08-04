@@ -1,0 +1,17 @@
+{
+    "name": "CM.SequenceManager",
+    "rootNamespace": "CM.SequenceManager",
+    "references": [
+        "GUID:3807aeacff3e2264099c8f32803673bc",
+        "GUID:b029927eb99e4b4469d0cce0f7190d48"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
