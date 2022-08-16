@@ -1,0 +1,21 @@
+{
+    "name": "CM.Editor.SequenceManagerEditor",
+    "rootNamespace": "CM.Editor.SequenceManagerEditor",
+    "references": [
+        "GUID:3807aeacff3e2264099c8f32803673bc",
+        "GUID:1ebf5b32ccf07c042ac79c84d2d81283",
+        "GUID:b029927eb99e4b4469d0cce0f7190d48",
+        "GUID:01c745d9e76f0d848945d1619d4e648b"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

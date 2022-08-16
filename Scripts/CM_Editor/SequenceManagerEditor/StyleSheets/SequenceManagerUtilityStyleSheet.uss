@@ -1,0 +1,169 @@
+/* Button */
+
+.SM_Button
+{
+	background-color: rgba(0, 23, 85, 1);
+	border-color: rgba(255, 255, 255, 1);
+	color: rgba(255, 255, 255, 1);
+	border-radius: 10px;
+	border-width: 1px;
+	max-width: 200px;
+	margin: 5px;
+	white-space: normal;
+}
+.SM_Button:hover
+{
+	background-color: rgba(200, 209, 29, .7);	
+}
+.SM_Button:active
+{
+	background-color: rgba(209, 29, 29, 1);
+}
+
+/* Label */
+
+.SM_Label
+{
+	background-color: rgba(255, 255, 255, 0);
+	color: rgba(255, 255, 255, 1);
+	border-width: 0px;
+	max-width: 200px;
+	height: 15px;
+	white-space: normal;
+}
+
+/* TextField */
+
+.SM_TextField > .unity-text-field__input
+{
+	background-color: rgba(0, 23, 85, 1);
+	border-color: rgba(255, 255, 255, 1);
+	color: rgba(255, 255, 255, 1);
+	border-radius: 1px;
+	border-width: 1px;
+	max-width: 200px;
+	margin: 5px;
+	white-space: normal;
+}
+
+/* IntField */
+
+.SM_IntField > .unity-integer-field__input
+{
+	background-color: rgba(0, 23, 85, 1);
+	border-color: rgba(255, 255, 255, 1);
+	color: rgba(255, 255, 255, 1);
+	border-radius: 1px;
+	border-width: 1px;
+	max-width: 200px;
+	margin: 5px;
+	white-space: normal;
+}
+
+/* FloatField */
+
+.SM_FloatField > .unity-float-field__input
+{
+	background-color: rgba(0, 23, 85, 1);
+	border-color: rgba(255, 255, 255, 1);
+	color: rgba(255, 255, 255, 1);
+	border-radius: 1px;
+	border-width: 1px;
+	max-width: 200px;
+	margin: 5px;
+	white-space: normal;
+}
+
+/* Toggle */
+
+.SM_Toggle > .unity-toggle__input
+{
+	background-color: rgba(255, 0, 0, 1);
+	border-color: rgba(255, 255, 255, 1);
+	color: rgba(255, 255, 255, 1);
+	border-radius: 10px;
+	border-width: 2px;
+	max-width: 200px;
+	margin: 5px;
+	white-space: normal;
+}
+
+.SM_Toggle .unity-toggle__checkmark
+{
+	background-image: unset;
+}
+
+.SM_Toggle .unity-toggle__text
+{
+	color: rgba(255, 255, 255, 1);
+}
+
+/* ObjectField */
+
+.SM_ObjectField > .unity-object-field__input
+{
+	background-color: rgba(0, 23, 85, 1);
+	border-color: rgba(255, 255, 255, 1);
+	color: rgba(255, 255, 255, 1);
+	border-radius: 1px;
+	border-width: 1px;
+	max-width: 200px;
+	margin: 5px;
+	white-space: normal;
+}
+
+.SM_ObjectField .unity-object-field__selector
+{
+	background-color: rgba(0, 23, 85, 1);
+}
+
+.SM_ObjectField .unity-label
+{
+	color: rgba(255, 255, 255, 1);
+}
+
+/* DropdownField */
+
+.SM_DropdownField > .unity-popup-field__input
+{
+	background-color: rgba(0, 23, 85, 1);
+	border-color: rgba(255, 255, 255, 1);
+	color: rgba(255, 255, 255, 1);
+	border-radius: 0px;
+	border-width: 1px;
+	max-width: 200px;
+	margin: 5px;
+	white-space: normal;
+}
+
+.SM_DropdownField .unity-text-element
+{
+	color: rgba(255, 255, 255, 1);
+}
+
+/* ScrollView */
+
+.SM_ScrollView
+{
+	background-color: rgba(70, 90, 130, 1);
+	border-color: rgba(255, 255, 255, 1);
+	color: rgba(255, 255, 255, 1);
+	border-radius: 1px;
+	border-width: 1px;
+	white-space: normal;
+}
+
+.SM_ScrollView .unity-base-slider__dragger
+{
+	background-color: rgba(255, 255, 255, 1);
+	border-color: rgba(70, 90, 130, 1);
+	border-width: 3px;
+}
+
+/* Foldout */
+
+.SM_Foldout .unity-label
+{
+	color: rgba(255, 255, 255, 1);
+	white-space: normal;
+}
