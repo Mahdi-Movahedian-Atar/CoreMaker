@@ -19,34 +19,36 @@ namespace CM.SequenceManager
             {
                 gameObject.AddComponent<SequenceManagerSaveData>();
             }
+
             if (!gameObject.TryGetComponent(typeof(SequenceManager), out _))
             {
                 gameObject.AddComponent<SequenceManager>();
             }
 
             SequenceManagerElementAttribute.Internalize();
-            PrimaryApplicationStartUp.AddStartUp("SequenceManager", 2).AddListener(_startUp);
+            PrimaryApplicationStartUp.AddStartUp("CM.SequenceManager").AddListener(_startUp);
         }
 
         private void _startUp()
         {
-            ApplicationManager.SetApplicationPartState("SequenceManager",false);
+            ApplicationManager.SetApplicationPackageState("CM.SequenceManager", false);
 
-            if (!AssetDatabase.IsValidFolder("Assets/Resources/SequenceManager"))
+            if (!AssetDatabase.IsValidFolder("Assets/Resources"))
             {
-                if (!AssetDatabase.IsValidFolder("Assets/Resources"))
-                {
-                    AssetDatabase.CreateFolder("Assets", "Resources");
-                }
-                AssetDatabase.CreateFolder("Assets/Resources", "SequenceManager");
+                AssetDatabase.CreateFolder("Assets", "Resources");
+            }
+            
+            if (Resources.Load<SequenceManagerSelector>("SequenceManagerSelector").
+                Selector.ContainsKey(SceneManager.GetActiveScene().name))
+            {
+                Resources.Load<SequenceManagerSelector>("SequenceManagerSelector").
+                    Selector[SceneManager.GetActiveScene().name].SetSequenceManager();
             }
 
-            Resources.Load<SequenceManagerData>("SequenceManager/" + SceneManager.GetActiveScene().name).SetSequenceManager();
-
             DataManagerEventHandler.LoadData(typeof(SequenceManagerSaveData));
-            
-            ApplicationManager.SetApplicationPartState("SequenceManager", true);
-            
+
+            ApplicationManager.SetApplicationPackageState("CM.SequenceManager", true);
+
             SequenceManager.StartAllCurrentArguments();
         }
     }

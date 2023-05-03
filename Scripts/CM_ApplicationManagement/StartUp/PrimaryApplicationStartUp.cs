@@ -9,71 +9,54 @@ namespace CM.ApplicationManagement
 {
     public class PrimaryApplicationStartUp : MonoBehaviour
     {
+        private static bool _isInternalize = false;
+
         public static List<string> StartUpNames = new List<string>();
         public static List<UnityEvent> StartUpEvents = new List<UnityEvent>();
-        public static List<int> StartUpOrder = new List<int>();
 
         void Awake()
         {
-            ApplicationManager.CurrentApplicationManager.PublicSpeed = 1;
-            ApplicationManager.CurrentApplicationManager.IsApplicationReady = false;
-            for (int i = 0; i < ApplicationManager.CurrentApplicationManager.ApplicationPartStates.Length; i++)
-            {
-                ApplicationManager.CurrentApplicationManager.ApplicationPartStates[i] = false;
-            }
+            _internalize();
         }
 
         void Start()
         {
-            int currentOrder = 0;
-
-            for (int i = 0; i < StartUpOrder.Count; i++)
+            for (int i = 0; i < StartUpNames.Count; i++)
             {
-                if (currentOrder == StartUpOrder[i])
-                {
-                    Debug.Log("ApplicationManager: " + StartUpNames[i] + " has been started");
-
-                    currentOrder++;
-
-                    StartUpEvents[i].Invoke();
-
-                    i = -1;
-                }
+                Debug.Log("ApplicationManager : " + StartUpNames[i] + " has been started");
+                
+                StartUpEvents[i].Invoke();
             }
 
             SecondaryApplicationStartUp.StartUp();
         }
 
-        public static UnityEvent AddStartUp(string startUpName, int startUpOrder)
+        public static UnityEvent AddStartUp(string packageName)
         {
-            if (!startUpName.Contains(startUpName))
+            if (!_isInternalize) _internalize();
+
+            if (StartUpNames.Contains(packageName))
             {
-                ApplicationManager.CurrentApplicationManager.ApplicationPartStates[startUpName.IndexOf(startUpName)] = false;
+                return StartUpEvents[StartUpNames.IndexOf(packageName)];
             }
-            else
+
+            Debug.Log($"ApplicationManager : {packageName} does not exist");
+            return null;
+        }
+
+        private static void _internalize()
+        {
+            ApplicationManager.CurrentApplicationManager.PublicSpeed = 1;
+            ApplicationManager.CurrentApplicationManager.IsApplicationReady = false;
+            for (int i = 0; i < ApplicationManager.CurrentApplicationManager.ApplicationPackageNames.Length; i++)
             {
-                StartUpNames.Add(startUpName);
-
-                foreach (int startOrder in StartUpOrder)
-                {
-                    if (startUpOrder == startOrder)
-                    {
-                        for (int i = 0; i < StartUpOrder.Count; i++)
-                        {
-                            if (startUpOrder >= StartUpOrder[i])
-                            {
-                                StartUpOrder[i]++;
-                            }
-                        }
-                    }
-                }
-
-                StartUpOrder.Add(startUpOrder);
-
+                StartUpNames.Add(ApplicationManager.CurrentApplicationManager.ApplicationPackageNames[i]);
                 StartUpEvents.Add(new UnityEvent());
+
+                ApplicationManager.CurrentApplicationManager.ApplicationPackageStates[i] = false;
             }
 
-            return StartUpEvents[startUpName.IndexOf(startUpName)];
+            _isInternalize = true;
         }
     }
 }

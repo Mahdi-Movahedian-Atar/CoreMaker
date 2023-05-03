@@ -93,6 +93,8 @@
 	max-height: 20px;
 	padding: 8px;
 	white-space: normal;	
+	margin-left: 0px;
+	margin-right: 0px;
 }
 
 .SequenceManager-node__button:hover

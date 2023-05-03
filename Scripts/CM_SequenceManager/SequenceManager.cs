@@ -27,6 +27,7 @@ namespace CM.SequenceManager
         #endregion
 
         //================================================================================================================
+        public string Name;
 
         public Dictionary<string, SequenceTable> SequenceTables;
         //----------------------------------------------------------------------------------------------------------------
@@ -34,7 +35,6 @@ namespace CM.SequenceManager
         public Dictionary<string, float> FloatParameters;
         public Dictionary<string, int> IntParameters;
         public Dictionary<string, bool> BoolParameters;
-        public Dictionary<string, object> ObjectParameters;
 
         //================================================================================================================
 

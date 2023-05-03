@@ -6,8 +6,10 @@ using UnityEngine;
 namespace CM.SequenceManager
 {
     [Serializable]
-    public class SequenceManagerData : ScriptableObject
+    public class SequenceManagerData
     {
+        public string Name;
+        
         public SequenceTableData[] SequenceTableData;
 
         public string[] StringParameterValues;
@@ -24,7 +26,9 @@ namespace CM.SequenceManager
 
         public void SetSequenceManager()
         {
-            SequenceManager sequenceManager = FindObjectOfType<SequenceManager>();
+            SequenceManager sequenceManager = ScriptableObject.FindObjectOfType<SequenceManager>();
+
+            sequenceManager.Name = Name;
 
             sequenceManager.SequenceTables = new Dictionary<string, SequenceTable>();
             sequenceManager.StringParameters = new Dictionary<string, string>();

@@ -39,7 +39,7 @@ namespace CM.InputManagement
         protected override void OnSettingSave()
         {
             base.OnSettingSave();
-            ApplicationManager.SetApplicationPartState("InputSystem", false);
+            ApplicationManager.SetApplicationPackageState("CM.InputManagement", false);
             //Try to load data------------------------------------------------------------------------------------
             try
             {
@@ -58,7 +58,7 @@ namespace CM.InputManagement
                 if (WriteGameData.SaveSettingObject(ThisSaveObject, SaveName, CreateBinaryFormatter()))
                 {
                     _isSaved = true;
-                    ApplicationManager.SetApplicationPartState("InputSystem", true);
+                    ApplicationManager.SetApplicationPackageState("CM.InputManagement", true);
                     return;
                 }
             }
@@ -70,7 +70,7 @@ namespace CM.InputManagement
                 throw;
             }
 
-            ApplicationManager.SetApplicationPartState("InputSystem", true);
+            ApplicationManager.SetApplicationPackageState("CM.InputManagement", true);
 
             _isSaved = false;
         }
@@ -87,7 +87,7 @@ namespace CM.InputManagement
 
             //Check if data is changed-----------------------------------------------------------------------------
 
-            ApplicationManager.SetApplicationPartState("InputSystem", false);
+            ApplicationManager.SetApplicationPackageState("CM.InputManagement", false);
 
             CurrentInputTables = InputManager.CurrentInputManager.InputTables;
 
@@ -119,7 +119,7 @@ namespace CM.InputManagement
 
                     InputManager.CurrentInputManager.InputTables[0] = SafeTable;
 
-                    ApplicationManager.SetApplicationPartState("InputSystem", true);
+                    ApplicationManager.SetApplicationPackageState("CM.InputManagement", true);
 
                     _isSaved = false;
                 }
@@ -141,7 +141,7 @@ namespace CM.InputManagement
         {
             base.OnSettingReset();
 
-            ApplicationManager.SetApplicationPartState("InputSystem", false);
+            ApplicationManager.SetApplicationPackageState("CM.InputManagement", false);
 
             if (DefaultInputTables == null)
             {
@@ -155,7 +155,7 @@ namespace CM.InputManagement
 
             OnSettingSave();
 
-            ApplicationManager.SetApplicationPartState("InputSystem", true);
+            ApplicationManager.SetApplicationPackageState("InputSystem", true);
         }
         //============================================================================================================
         public BinaryFormatter CreateBinaryFormatter()

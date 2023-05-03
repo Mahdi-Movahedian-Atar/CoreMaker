@@ -20,7 +20,7 @@ namespace CM.SequenceManager
         private static SaveObject _thisSaveObject = new SaveObject();
         public static SaveObject ThisSaveObject => _thisSaveObject;
 
-        public static string SaveName => "SequenceManager" + SceneManager.GetActiveScene().name;
+        public static string SaveName => "CM.SequenceManager" + SequenceManager.CurrentSequenceManager.Name;
 
         private string[] _currentStringParameters;
         private int[] _currentIntParameters;
@@ -33,7 +33,7 @@ namespace CM.SequenceManager
         {
             if (_currentCurrentArguments == null) { _setCurrentData(); }
 
-            ApplicationManager.SetApplicationPartState("SequenceManager", false);
+            ApplicationManager.SetApplicationPackageState("CM.SequenceManager", false);
             try
             {
                 string[] stringParameters = new string[SequenceManager.CurrentSequenceManager.StringParameters.Count];
@@ -63,7 +63,7 @@ namespace CM.SequenceManager
                 {
                     _setCurrentData();
                     _isSaved = true;
-                    ApplicationManager.SetApplicationPartState("SequenceManager", true);
+                    ApplicationManager.SetApplicationPackageState("CM.SequenceManager", true);
                     return;
                 }
             }
@@ -76,12 +76,12 @@ namespace CM.SequenceManager
 
             _isSaved = false;
 
-            ApplicationManager.SetApplicationPartState("SequenceManager", true);
+            ApplicationManager.SetApplicationPackageState("CM.SequenceManager", true);
         }
 
         protected override void OnLoad()
         {
-            ApplicationManager.SetApplicationPartState("SequenceManager", false);
+            ApplicationManager.SetApplicationPackageState("CM.SequenceManager", false);
             string[] keys;
             if (_currentCurrentArguments == null) { _setCurrentData(); }
 
@@ -144,7 +144,7 @@ namespace CM.SequenceManager
 
                         _setCurrentData();
                         _isSaved = true;
-                        ApplicationManager.SetApplicationPartState("SequenceManager", true);
+                        ApplicationManager.SetApplicationPackageState("CM.SequenceManager", true);
                         return;
                     }
                 }
@@ -192,7 +192,7 @@ namespace CM.SequenceManager
                 SequenceManager.CurrentSequenceManager.SequenceTables[keys[i]].IsTableActive = _currentStates[i];
             }
 
-            ApplicationManager.SetApplicationPartState("SequenceManager", true);
+            ApplicationManager.SetApplicationPackageState("CM.SequenceManager", true);
         }
 
         private void _setCurrentData()

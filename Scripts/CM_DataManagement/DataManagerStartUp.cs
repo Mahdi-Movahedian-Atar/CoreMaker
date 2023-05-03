@@ -9,12 +9,12 @@ namespace CM.DataManagement
     {
         public void Awake()
         {
-            PrimaryApplicationStartUp.AddStartUp("DataManager", 0).AddListener(_startUp);
+            PrimaryApplicationStartUp.AddStartUp("CM.DataManagement").AddListener(_startUp);
         }
 
         private void _startUp()
         {
-            ApplicationManager.SetApplicationPartState("DataManager", false);
+            ApplicationManager.SetApplicationPackageState("CM.DataManagement", false);
 
             if (!ReadGameData.ReadDefaultPath())
             {
@@ -25,7 +25,7 @@ namespace CM.DataManagement
 
             ReadGameData.ReadSaveSlots();
 
-            ApplicationManager.SetApplicationPartState("DataManager", true);
+            ApplicationManager.SetApplicationPackageState("CM.DataManagement", true);
         }
     }
 }

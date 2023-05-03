@@ -12,6 +12,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
 using CM.SequenceManager;
+using NUnit.Framework.Interfaces;
 using static CM.Editor.SequenceManagerEditor.SequenceManagerEditorUtilities;
 using Button = UnityEngine.UIElements.Button;
 using Toggle = UnityEngine.UIElements.Toggle;
@@ -33,6 +34,8 @@ namespace CM.Editor.SequenceManagerEditor
 
         private VisualElement _graphViewContainer;
         private VisualElement _toolContainer;
+
+        private string _name;
 
         private ScrollView _sequenceTablesContainer;
         private ScrollView _stringParametersContainer;
@@ -89,11 +92,14 @@ namespace CM.Editor.SequenceManagerEditor
                 _loadAsset();
             });
 
+            TextField textField = SM_TextField(_name);
+            textField.RegisterValueChangedCallback(targed => { _name = textField.value; });
+
             _toolContainer = SM_ScrollView(ScrollViewMode.Vertical);
 
             _toolContainer.Add(SM_Button("Save", _saveAsset));
             _toolContainer.Add(SM_Button("Load", _loadAsset));
-            _toolContainer.Add(SM_Button("Set", _setSequenceManager));
+            _toolContainer.Add(textField);
             _toolContainer.Add(objectField);
 
             _toolContainer.Add(SM_Foldout("Sequence Tables"));
@@ -189,6 +195,8 @@ namespace CM.Editor.SequenceManagerEditor
             }
 
             _sequenceTablesContainer.Add(SM_Button("New Table", _addTable));
+
+            _updateTableOrder();
         }
 
         private void _addTable()
@@ -222,6 +230,8 @@ namespace CM.Editor.SequenceManagerEditor
 
             _graphViews.Add(graphView);
             _isChanged.Add(true);
+
+            _updateTableOrder();
         }
 
         private void _removeTable(int index)
@@ -244,6 +254,71 @@ namespace CM.Editor.SequenceManagerEditor
 
                 _sequenceTablesContainer.ElementAt(i).RemoveAt(1);
                 _sequenceTablesContainer.ElementAt(i).Insert(1, removeButton);
+            }
+
+            _updateTableOrder();
+        }
+
+        private void _updateTableOrder()
+        {
+            List<string> choices = new List<string>();
+            for (int i = 0; i < _sequenceTablesContainer.childCount - 1; i++) choices.Add(i.ToString());
+
+            for (int i = 0; i < _sequenceTablesContainer.childCount - 1; i++)
+            {
+                VisualElement row = _sequenceTablesContainer[i];
+                if (row.childCount == 5) row.RemoveAt(0);
+                row.RemoveAt(0);
+                row.RemoveAt(0);
+                int index = i;
+
+                row.Insert(0, SM_DropdownField(choices, index, choice =>
+                {
+                    int order = Convert.ToInt32(choice);
+
+                    if (index == order) return choice;
+
+
+                    VisualElement NewRow = _sequenceTablesContainer[index];
+                    _sequenceTablesContainer.RemoveAt(index);
+                    _sequenceTablesContainer.Insert(order, NewRow);
+
+                    bool isChanged = _isChanged[index];
+                    _isChanged.RemoveAt(index);
+                    _isChanged.Insert(order, isChanged);
+
+                    SequenceManagerGraphView graphView = _graphViews[index];
+                    _graphViews.RemoveAt(index);
+                    _graphViews.Insert(order, graphView);
+
+                    if (_currentGraphViewIndex == index) _currentGraphViewIndex = order;
+                    else if (order >= _currentGraphViewIndex && _currentGraphViewIndex > index)
+                        _currentGraphViewIndex--;
+
+                    _updateTableOrder();
+
+                    return choice;
+                }));
+                row[0][0].style.minWidth = 40;
+                
+                row.Insert(1,SM_Button(null, () => _setGraph(index)));
+
+                Button button = SM_Button(null, () => _removeTable(index));
+                button.style.backgroundColor = Color.red;
+                row.Insert(2, button);
+
+                row[0][0].style.marginLeft = 1;
+                row[0][0].style.marginRight = 1;
+                row[1].style.marginLeft = 1;
+                row[1].style.marginRight = 1;
+                row[2].style.marginLeft = 1;
+                row[2].style.marginRight = 1;
+                row[3].style.marginLeft = 1;
+                row[3].style.marginRight = 1;
+                row[4][0].style.marginLeft = 1;
+                row[4][0].style.marginRight = 1;
+                row[4][0].style.marginLeft = 1;
+                row[4][0].style.marginRight = 1;
             }
         }
 
@@ -489,6 +564,13 @@ namespace CM.Editor.SequenceManagerEditor
             {
                 _createTableContainer();
                 _createParametersContainer();
+                _name = CurrentAsset.Name;
+                ((TextField)_toolContainer[2]).value = _name;
+            }
+            else
+            {
+                _name = "";
+                ((TextField)_toolContainer[2]).value = "";
             }
 
             _setGraph(_currentGraphViewIndex);
@@ -496,6 +578,14 @@ namespace CM.Editor.SequenceManagerEditor
 
         private void _saveAsset()
         {
+            if (CurrentAsset == null)
+            {
+                Debug.LogWarning("SequenceManager: No Asset has been found");
+                return;
+            }
+
+            CurrentAsset.Name = _name;
+
             List<SequenceManagerGraphViewData> data = CurrentAsset.GraphViewDataList;
             CurrentAsset.GraphViewDataList = new List<SequenceManagerGraphViewData>();
 
@@ -509,7 +599,7 @@ namespace CM.Editor.SequenceManagerEditor
                 {
                     CurrentAsset.GraphViewDataList.Add(_graphViews[i].SaveGraph());
 
-                    if (String.IsNullOrEmpty(((TextField)_sequenceTablesContainer.ElementAt(i).ElementAt(2)).value))
+                    if (String.IsNullOrEmpty(((TextField)_sequenceTablesContainer.ElementAt(i).ElementAt(3)).value))
                     {
                         ((TextField)_sequenceTablesContainer.ElementAt(i).ElementAt(2)).value = "null";
                     }
@@ -519,7 +609,7 @@ namespace CM.Editor.SequenceManagerEditor
                     CurrentAsset.GraphViewDataList.Add(data[i]);
                 }
 
-                string name = ((TextField)_sequenceTablesContainer.ElementAt(i).ElementAt(2)).value;
+                string name = ((TextField)_sequenceTablesContainer.ElementAt(i).ElementAt(3)).value;
 
                 if (names.Contains(name))
                 {
@@ -536,12 +626,14 @@ namespace CM.Editor.SequenceManagerEditor
                 names.Add(name);
 
                 CurrentAsset.GraphViewDataList[i].GraphName = name;
-                CurrentAsset.GraphViewStateList.Add(((Toggle)_sequenceTablesContainer.ElementAt(i).ElementAt(3))
+                CurrentAsset.GraphViewStateList.Add(((Toggle)_sequenceTablesContainer.ElementAt(i).ElementAt(4))
                     .value);
             }
-
+            //===================================================================
             CurrentAsset.StringParameterNames = new List<string>();
             CurrentAsset.StringParameterValues = new List<string>();
+
+            Dictionary<string, string> stringParameterDictionary = new Dictionary<string, string>();
 
             for (int i = 0; i < _stringParametersContainer.childCount - 1; i++)
             {
@@ -557,20 +649,22 @@ namespace CM.Editor.SequenceManagerEditor
                     int repeatCount = 2;
 
                     while (CurrentAsset.StringParameterNames.Contains(name + repeatCount))
-                    {
                         repeatCount++;
-                    }
 
                     name += repeatCount.ToString();
                 }
-
+                
+                stringParameterDictionary.Add(name,((TextField)_stringParametersContainer.ElementAt(i).ElementAt(2)).value);
                 CurrentAsset.StringParameterNames.Add(name);
-                CurrentAsset.StringParameterValues.Add(
-                    ((TextField)_stringParametersContainer.ElementAt(i).ElementAt(2)).value);
             }
-
+            CurrentAsset.StringParameterNames.Sort();
+            foreach (string stringParameter in CurrentAsset.StringParameterNames)
+                CurrentAsset.StringParameterValues.Add(stringParameterDictionary[stringParameter]);
+            //===================================================================
             CurrentAsset.FloatParameterNames = new List<string>();
             CurrentAsset.FloatParameterValues = new List<float>();
+
+            Dictionary<string, float> floatParameterDictionary = new Dictionary<string, float>();
 
             for (int i = 0; i < _floatParametersContainer.childCount - 1; i++)
             {
@@ -592,14 +686,20 @@ namespace CM.Editor.SequenceManagerEditor
 
                     name += repeatCount.ToString();
                 }
+                
+                floatParameterDictionary.Add(name, ((FloatField)_floatParametersContainer.ElementAt(i).ElementAt(2)).value);
 
                 CurrentAsset.FloatParameterNames.Add(name);
-                CurrentAsset.FloatParameterValues.Add(((FloatField)_floatParametersContainer.ElementAt(i).ElementAt(2))
-                    .value);
             }
-
+            
+            CurrentAsset.FloatParameterNames.Sort();
+            foreach (string floatParameter in CurrentAsset.FloatParameterNames)
+                CurrentAsset.FloatParameterValues.Add(floatParameterDictionary[floatParameter]);
+            //===================================================================
             CurrentAsset.IntParameterNames = new List<string>();
             CurrentAsset.IntParameterValues = new List<int>();
+            
+            Dictionary<string, int> intParameterDictionary = new Dictionary<string, int>();
 
             for (int i = 0; i < _intParametersContainer.childCount - 1; i++)
             {
@@ -621,14 +721,20 @@ namespace CM.Editor.SequenceManagerEditor
 
                     name += repeatCount.ToString();
                 }
+                
+                intParameterDictionary.Add(name, ((IntegerField)_intParametersContainer.ElementAt(i).ElementAt(2)).value);
 
                 CurrentAsset.IntParameterNames.Add(name);
-                CurrentAsset.IntParameterValues.Add(((IntegerField)_intParametersContainer.ElementAt(i).ElementAt(2))
-                    .value);
             }
-
+            
+            CurrentAsset.IntParameterNames.Sort();
+            foreach (string intParameter in CurrentAsset.IntParameterNames)
+                CurrentAsset.IntParameterValues.Add(intParameterDictionary[intParameter]);
+            //===================================================================
             CurrentAsset.BoolParameterNames = new List<string>();
             CurrentAsset.BoolParameterValues = new List<bool>();
+            
+            Dictionary<string, bool> boolParameterDictionary = new Dictionary<string, bool>();
 
             for (int i = 0; i < _boolParametersContainer.childCount - 1; i++)
             {
@@ -650,83 +756,47 @@ namespace CM.Editor.SequenceManagerEditor
 
                     name += repeatCount.ToString();
                 }
+                
+                boolParameterDictionary.Add(name, ((Toggle)_boolParametersContainer.ElementAt(i).ElementAt(2)).value);
 
                 CurrentAsset.BoolParameterNames.Add(name);
-                CurrentAsset.BoolParameterValues.Add(
-                    ((Toggle)_boolParametersContainer.ElementAt(i).ElementAt(2)).value);
             }
+            CurrentAsset.BoolParameterNames.Sort();
+            foreach (string boolParameter in CurrentAsset.BoolParameterNames)
+                CurrentAsset.BoolParameterValues.Add(boolParameterDictionary[boolParameter]);
+            //===================================================================
+            List<SequenceTableData> sequenceTableData = new List<SequenceTableData>();
+            for (int i = 0; i < _graphViews.Count; i++)
+            {
+                sequenceTableData.Add(
+                    _graphViews[i].CreateSequenceTable(CurrentAsset.GraphViewDataList[i].GraphName,
+                        CurrentAsset.GraphViewStateList[i]));
+            }
+            
+            SequenceManagerData sequenceManagerData = new SequenceManagerData();
+
+            sequenceManagerData.Name = _name;
+
+            sequenceManagerData.SequenceTableData = sequenceTableData.ToArray();
+
+            sequenceManagerData.StringParameterNames = CurrentAsset.StringParameterNames.ToArray();
+            sequenceManagerData.StringParameterValues = CurrentAsset.StringParameterValues.ToArray();
+
+            sequenceManagerData.IntParameterNames = CurrentAsset.IntParameterNames.ToArray();
+            sequenceManagerData.IntParameterValues = CurrentAsset.IntParameterValues.ToArray();
+
+            sequenceManagerData.FloatParameterNames = CurrentAsset.FloatParameterNames.ToArray();
+            sequenceManagerData.FloatParameterValues = CurrentAsset.FloatParameterValues.ToArray();
+
+            sequenceManagerData.BoolParameterNames = CurrentAsset.BoolParameterNames.ToArray();
+            sequenceManagerData.BoolParameterValues = CurrentAsset.BoolParameterValues.ToArray();
+
+            CurrentAsset.Data = sequenceManagerData;
 
             EditorUtility.SetDirty(CurrentAsset);
             AssetDatabase.Refresh();
 
             _loadAsset();
-        }
-
-        private void _setSequenceManager()
-        {
-            if (CurrentAsset != null)
-            {
-                _saveAsset();
-                //=
-                List<SequenceTableData> sequenceTableData = new List<SequenceTableData>();
-                for (int i = 0; i < _graphViews.Count; i++)
-                {
-                    sequenceTableData.Add(
-                        _graphViews[i].CreateSequenceTable(CurrentAsset.GraphViewDataList[i].GraphName, CurrentAsset.GraphViewStateList[i]));
-                }
-
-                SequenceManagerData sequenceManagerData = CreateInstance<SequenceManagerData>();
-
-                sequenceManagerData.SequenceTableData = sequenceTableData.ToArray();
-
-                sequenceManagerData.StringParameterNames = CurrentAsset.StringParameterNames.ToArray();
-                sequenceManagerData.StringParameterValues = CurrentAsset.StringParameterValues.ToArray();
-
-                sequenceManagerData.IntParameterNames = CurrentAsset.IntParameterNames.ToArray();
-                sequenceManagerData.IntParameterValues = CurrentAsset.IntParameterValues.ToArray();
-
-                sequenceManagerData.FloatParameterNames = CurrentAsset.FloatParameterNames.ToArray();
-                sequenceManagerData.FloatParameterValues = CurrentAsset.FloatParameterValues.ToArray();
-
-                sequenceManagerData.BoolParameterNames = CurrentAsset.BoolParameterNames.ToArray();
-                sequenceManagerData.BoolParameterValues = CurrentAsset.BoolParameterValues.ToArray();
-
-                //==
-                if (!AssetDatabase.IsValidFolder("Assets/Resources/SequenceManager"))
-                {
-                    if (!AssetDatabase.IsValidFolder("Assets/Resources"))
-                    {
-                        AssetDatabase.CreateFolder("Assets", "Resources");
-                    }
-                    AssetDatabase.CreateFolder("Assets/Resources", "SequenceManager");
-                }
-
-                string[] assets = Directory.GetFiles(Application.dataPath + "/Resources/SequenceManager");
-                List<string> validScenes = new List<string>();
-
-                foreach (EditorBuildSettingsScene scene in EditorBuildSettings.scenes)
-                {
-                    validScenes.Add(scene.path.Remove(scene.path.IndexOf(".unity"), 6).Remove(0, scene.path.LastIndexOf('/') + 1));
-                }
-
-                for (int i = 0; i < assets.Length; i++)
-                {
-                    assets[i] = assets[i].Remove(assets[i].Length - 6, 6).Remove(0, Application.dataPath.Length + 27);
-
-                    if (!validScenes.Contains(assets[i]))
-                    {
-                        AssetDatabase.DeleteAsset("Assets/Resources/SequenceManager/" + assets[i] + ".asset");
-                    }
-                }
-
-                //==
-                AssetDatabase.CreateAsset(
-                    sequenceManagerData, "Assets/Resources/SequenceManager/" + EditorSceneManager.GetActiveScene().name + ".asset");
-
-                return;
-            }
-
-            Debug.LogWarning("No SequenceManager asset found");
         }
     }
 }

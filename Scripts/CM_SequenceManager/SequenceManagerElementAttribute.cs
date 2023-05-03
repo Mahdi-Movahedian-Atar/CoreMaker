@@ -33,7 +33,8 @@ namespace CM.SequenceManager
 
                 foreach (Type type in types)
                 {
-                    SequenceManagerElementAttribute sequenceAttribute = type.GetCustomAttribute<SequenceManagerElementAttribute>();
+                    SequenceManagerElementAttribute sequenceAttribute =
+                        type.GetCustomAttribute<SequenceManagerElementAttribute>();
 
                     if (sequenceAttribute != null)
                     {

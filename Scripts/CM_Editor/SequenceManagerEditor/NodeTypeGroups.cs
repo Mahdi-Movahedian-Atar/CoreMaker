@@ -14,9 +14,14 @@ namespace CM.Editor.SequenceManagerEditor
         internal static Dictionary<string, string> ArgumentGroups = new Dictionary<string, string>();
         internal static List<string> Groups = new List<string>();
 
+        private static bool _isInternalized = false;
+
         internal static void Internalize()
         {
-            Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            if (_isInternalized)
+                return;
+
+                Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
             foreach (Assembly assembly in assemblies)
             {
                 Type[] types = assembly.GetTypes();
@@ -66,6 +71,7 @@ namespace CM.Editor.SequenceManagerEditor
                 }
             }
             Groups.Sort();
+            _isInternalized = true;
         }
     }
 

@@ -35,7 +35,8 @@ namespace CM.Editor.SequenceManagerEditor
             _objectType = SM_ObjectField(null, null, typeof(DataManagerMainObject));
             _objectType.RegisterValueChangedCallback(target =>
             {
-                _type.value = _objectType.value.ToString();
+                if (_objectType.value != null)
+                    _type.value = _objectType.value.ToString();
                 _type.value = _type.value.Remove(_type.value.IndexOf(')'), _type.value.Length - _type.value.IndexOf(')'));
                 _type.value = _type.value.Remove(0, _type.value.IndexOf('(') + 1);
             });

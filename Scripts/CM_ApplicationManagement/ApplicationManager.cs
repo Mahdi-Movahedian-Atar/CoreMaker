@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace CM.ApplicationManagement
 {
@@ -37,24 +38,24 @@ namespace CM.ApplicationManagement
         public float PublicSpeed = 1;
         public bool IsApplicationReady = false;
 
-        public bool[] ApplicationPartStates;
-        public string[] ApplicationPartNames;
+        public bool[] ApplicationPackageStates;
+        public string[] ApplicationPackageNames;
         //------------------------------------------------------------------------------------------------------------------
-        public static void SetApplicationPartState(string partName, bool state)
+        public static void SetApplicationPackageState(string packageName, bool state)
         {
-            //Try to get applicationPart-------------------------------------------------------------------------------------------
-            for (int i = 0; i < CurrentApplicationManager.ApplicationPartNames.Length; i++)
+            //Try to get Package-------------------------------------------------------------------------------------------
+            for (int i = 0; i < CurrentApplicationManager.ApplicationPackageNames.Length; i++)
             {
-                if (partName == CurrentApplicationManager.ApplicationPartNames[i])
+                if (packageName == CurrentApplicationManager.ApplicationPackageNames[i])
                 {
-                    if (CurrentApplicationManager.ApplicationPartStates[i] != state)
+                    if (CurrentApplicationManager.ApplicationPackageStates[i] != state)
                     {
-                        CurrentApplicationManager.ApplicationPartStates[i] = state;
+                        CurrentApplicationManager.ApplicationPackageStates[i] = state;
 
-                        Debug.Log("ApplicationManager : " + partName + " state is " + state);
+                        Debug.Log("ApplicationManager : " + packageName + " state is " + state);
 
                         //Check if the application is ready----------------------------------------------------------------------------
-                        foreach (bool applicationPart in CurrentApplicationManager.ApplicationPartStates)
+                        foreach (bool applicationPart in CurrentApplicationManager.ApplicationPackageStates)
                         {
                             if (!applicationPart)
                             {
@@ -70,7 +71,7 @@ namespace CM.ApplicationManagement
                 }
             }
             //If it failed--------------------------------------------------------------------------------------------------
-            Debug.LogError("ApplicationManager : Failed to found " + partName);
+            Debug.LogError("ApplicationManager : Failed to found " + packageName);
         }
     }
 }

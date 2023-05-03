@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Windows.Markup;
+using CM.SequenceManager;
 using UnityEngine;
 
 namespace CM.Editor.SequenceManagerEditor
@@ -8,6 +10,10 @@ namespace CM.Editor.SequenceManagerEditor
     [CreateAssetMenu , Serializable]
     public class SequenceManagerAsset : ScriptableObject
     {
+        [SerializeField] public SequenceManagerData Data;
+        
+        [SerializeField] public string Name;
+        
         public List<SequenceManagerGraphViewData> GraphViewDataList;
         public List<bool> GraphViewStateList;
 

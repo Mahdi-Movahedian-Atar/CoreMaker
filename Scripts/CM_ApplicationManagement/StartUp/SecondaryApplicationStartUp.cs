@@ -40,7 +40,7 @@ namespace CM.ApplicationManagement
         {
             if (!startUpName.Contains(startUpName))
             {
-                ApplicationManager.CurrentApplicationManager.ApplicationPartStates[startUpName.IndexOf(startUpName)] = false;
+                ApplicationManager.CurrentApplicationManager.ApplicationPackageStates[startUpName.IndexOf(startUpName)] = false;
             }
             else
             {

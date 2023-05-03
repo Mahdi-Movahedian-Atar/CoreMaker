@@ -11,7 +11,7 @@ namespace CM.InputManagement
     {
         public void Awake()
         {
-            PrimaryApplicationStartUp.AddStartUp("InputSystem", 1).AddListener(_startUp);
+            PrimaryApplicationStartUp.AddStartUp("CM.InputManagement").AddListener(_startUp);
         }
         private void _startUp()
         {
